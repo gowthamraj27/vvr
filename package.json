@@ -1,0 +1,13 @@
+{
+  "name": "jayanthi-catering",
+  "version": "1.0.0",
+  "description": "Jayanthi Catering Service & Restaurant website",
+  "scripts": {
+    "dev": "vite --host --port 5173",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

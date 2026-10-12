@@ -1,0 +1,340 @@
+/* Jayanthi Catering Service & Restaurant - Custom Stylesheet */
+/* Design Tokens from Stitch MCP "Authentic Heritage Feast" */
+
+:root {
+  --color-cream: #FBF3E4;
+  --color-cream-light: #FFF8EF;
+  --color-ivory: #FFFDF9;
+  --color-maroon: #7A1F1A;
+  --color-maroon-dark: #581410;
+  --color-maroon-light: #9B2822;
+  --color-saffron: #D97706;
+  --color-saffron-gold: #E3A008;
+  --color-saffron-light: #FEF3C7;
+  --color-leaf-green: #1B7938;
+  --color-leaf-green-light: #E8F5E9;
+  --color-coffee: #2B1B12;
+  --color-taupe: #634832;
+  --color-border-warm: rgba(122, 31, 26, 0.12);
+  --shadow-spice: 0 10px 25px -5px rgba(43, 27, 18, 0.08), 0 8px 10px -6px rgba(122, 31, 26, 0.05);
+}
+
+/* Base resets & typography */
+html {
+  scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-coffee);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-coffee);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 74px; /* Space for sticky bottom bar on mobile */
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Authentic Paper & Subtle Grain Texture */
+.heritage-texture {
+  background-color: var(--color-cream);
+  background-image: radial-gradient(rgba(122, 31, 26, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Kolam / Temple border decorative divider */
+.kolam-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 2rem auto;
+}
+
+.kolam-divider::before,
+.kolam-divider::after {
+  content: "";
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-saffron), transparent);
+  flex: 1;
+  max-width: 140px;
+}
+
+.kolam-motif {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23D97706'%3E%3Cpath d='M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z' opacity='0.7'/%3E%3Ccircle cx='12' cy='12' r='2' fill='%237A1F1A'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+/* Steam Animation */
+.steam-container {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 180px;
+  pointer-events: none;
+  z-index: 10;
+  overflow: visible;
+}
+
+.steam-particle {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(12px);
+  opacity: 0;
+  animation: riseSteam 3.8s infinite ease-out;
+}
+
+.steam-particle:nth-child(1) {
+  left: 20%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  animation-duration: 3.5s;
+}
+
+.steam-particle:nth-child(2) {
+  left: 45%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 1.1s;
+  animation-duration: 4.2s;
+}
+
+.steam-particle:nth-child(3) {
+  left: 65%;
+  width: 70px;
+  height: 70px;
+  animation-delay: 2s;
+  animation-duration: 3.9s;
+}
+
+.steam-particle:nth-child(4) {
+  left: 35%;
+  width: 90px;
+  height: 90px;
+  animation-delay: 2.7s;
+  animation-duration: 4.5s;
+}
+
+@keyframes riseSteam {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.55;
+    transform: translateY(-40px) scale(1) rotate(5deg);
+  }
+  70% {
+    opacity: 0.3;
+    transform: translateY(-90px) scale(1.4) rotate(-5deg);
+  }
+  100% {
+    transform: translateY(-140px) scale(1.8) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+/* Calm Pulse Animation for WhatsApp actions */
+@keyframes calmPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(27, 121, 56, 0.25);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 8px 24px rgba(27, 121, 56, 0.4);
+  }
+}
+
+.btn-whatsapp-pulse {
+  animation: calmPulse 3s infinite ease-in-out;
+}
+
+/* Veg / Non-Veg Indicator dots */
+.indicator-veg {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #1B7938;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background-color: #FFFFFF;
+}
+
+.indicator-veg::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: #1B7938;
+  border-radius: 50%;
+}
+
+.indicator-nonveg {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #7A1F1A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background-color: #FFFFFF;
+}
+
+.indicator-nonveg::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-bottom: 7px solid #7A1F1A;
+}
+
+/* Horizontal swipe cards on mobile */
+.horizontal-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.horizontal-scroll-item {
+  scroll-snap-align: start;
+  flex: 0 0 290px;
+}
+
+@media (min-width: 640px) {
+  .horizontal-scroll-item {
+    flex: 0 0 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .horizontal-scroll-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    overflow-x: visible;
+  }
+  .horizontal-scroll-item {
+    flex: none;
+  }
+}
+
+/* Sticky Bottom Bar on Mobile */
+.mobile-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  background-color: rgba(255, 253, 249, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(122, 31, 26, 0.12);
+  box-shadow: 0 -4px 18px rgba(43, 27, 18, 0.08);
+  padding: 10px 16px;
+}
+
+/* Fullscreen Mobile Drawer */
+.mobile-menu-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 60;
+  background-color: var(--color-cream);
+  background-image: radial-gradient(rgba(122, 31, 26, 0.04) 1px, transparent 0);
+  background-size: 20px 20px;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.mobile-menu-drawer.open {
+  transform: translateX(0);
+}
+
+/* Toast Notification */
+.toast-notice {
+  position: fixed;
+  bottom: 86px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background-color: var(--color-coffee);
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-notice.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+@media (min-width: 1024px) {
+  .toast-notice {
+    bottom: 24px;
+  }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .steam-particle {
+    animation: none !important;
+    display: none;
+  }
+  .btn-whatsapp-pulse {
+    animation: none !important;
+  }
+  .mobile-menu-drawer {
+    transition: opacity 0.15s ease-in-out;
+    transform: none;
+    display: none;
+  }
+  .mobile-menu-drawer.open {
+    display: block;
+    opacity: 1;
+  }
+}
