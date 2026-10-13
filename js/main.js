@@ -2,14 +2,21 @@
 // Main Application Script
 // Proprietor: JANARDHANAN REDDY K | WhatsApp: 9380414248 | Phone: 98844 14248
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   initMobileDrawer();
   initMenuRenderer();
   initCateringQuoteModal();
   initAddressCopy();
   initGalleryLightbox();
   initScrollAnimations();
-});
+}
+
+// Ensure execution even if DOMContentLoaded already fired (common on mobile or module scripts)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // 1. Mobile Drawer Navigation
 function initMobileDrawer() {
@@ -20,18 +27,21 @@ function initMobileDrawer() {
 
   if (!drawer || !openBtn) return;
 
-  function openDrawer() {
+  function openDrawer(e) {
+    if (e) e.preventDefault();
     drawer.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
-  function closeDrawer() {
+  function closeDrawer(e) {
+    if (e) e.preventDefault();
     drawer.classList.remove('open');
     document.body.style.overflow = '';
   }
 
-  openBtn.addEventListener('click', openDrawer);
-  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  // Remove existing listeners if any, then attach
+  openBtn.onclick = openDrawer;
+  if (closeBtn) closeBtn.onclick = closeDrawer;
 
   navLinks.forEach(link => {
     link.addEventListener('click', closeDrawer);
@@ -82,7 +92,11 @@ function initMenuRenderer() {
 
 function renderMenuItems() {
   const container = document.getElementById('menu-items-grid');
-  if (!container || !window.RESTAURANT_MENU) return;
+  if (!container) return;
+  if (!window.RESTAURANT_MENU || !Array.isArray(window.RESTAURANT_MENU)) {
+    setTimeout(renderMenuItems, 50);
+    return;
+  }
 
   const filtered = window.RESTAURANT_MENU.filter(item => {
     const matchCategory = currentCategory === 'all' || item.category === currentCategory;
@@ -339,11 +353,16 @@ function initScrollAnimations() {
       }
     });
   }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.02,
+    rootMargin: '0px 0px 100px 0px'
   });
 
   revealElements.forEach(el => {
+    // If element is already in viewport or is the menu items container, do not hide it
+    if (el.id === 'menu-items-grid') {
+      el.classList.add('opacity-100');
+      return;
+    }
     el.classList.add('opacity-0', 'translate-y-6', 'transition-all', 'duration-700', 'ease-out');
     observer.observe(el);
   });
