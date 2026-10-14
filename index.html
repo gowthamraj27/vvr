@@ -109,8 +109,104 @@
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Fast Inline Mobile Menu & Filter Scripts (Zero Dependency, Immediate Execution) -->
+  <script>
+    function openMobileDrawer(e) {
+      if (e) e.preventDefault();
+      var d = document.getElementById('mobile-drawer');
+      if (d) {
+        d.classList.add('open');
+        d.style.display = 'flex';
+        d.style.visibility = 'visible';
+        d.style.transform = 'translateX(0)';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeMobileDrawer(e) {
+      if (e) e.preventDefault();
+      var d = document.getElementById('mobile-drawer');
+      if (d) {
+        d.classList.remove('open');
+        d.style.transform = 'translateX(100%)';
+        d.style.visibility = 'hidden';
+        document.body.style.overflow = '';
+      }
+    }
+    var currentMenuCat = 'all';
+    var currentMenuDiet = 'all';
+    function switchMenuCategory(cat, btn) {
+      currentMenuCat = cat;
+      document.querySelectorAll('.menu-category-tab').forEach(function(t) {
+        t.classList.remove('active-tab', 'bg-maroon', 'text-white');
+        t.classList.add('bg-white', 'text-coffee', 'border-warm');
+      });
+      if (btn) {
+        btn.classList.add('active-tab', 'bg-maroon', 'text-white');
+        btn.classList.remove('bg-white', 'text-coffee');
+      }
+      filterMenuDishes();
+    }
+    function switchDietFilter(diet, btn) {
+      currentMenuDiet = diet;
+      document.querySelectorAll('.diet-filter-pill').forEach(function(p) {
+        p.classList.remove('bg-maroon', 'text-white');
+        p.classList.add('bg-white', 'text-coffee');
+      });
+      if (btn) {
+        btn.classList.add('bg-maroon', 'text-white');
+        btn.classList.remove('bg-white', 'text-coffee');
+      }
+      filterMenuDishes();
+    }
+    function filterMenuDishes() {
+      var cards = document.querySelectorAll('#menu-items-grid .menu-item-card');
+      var visible = 0;
+      cards.forEach(function(card) {
+        var cat = card.getAttribute('data-category');
+        var veg = card.getAttribute('data-veg') === 'true';
+        var matchCat = (currentMenuCat === 'all' || cat === currentMenuCat);
+        var matchDiet = (currentMenuDiet === 'all' || (currentMenuDiet === 'veg' && veg) || (currentMenuDiet === 'nonveg' && !veg));
+        if (matchCat && matchDiet) {
+          card.style.display = 'flex';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      var emptyNotice = document.getElementById('menu-empty-message');
+      if (emptyNotice) {
+        emptyNotice.style.display = (visible === 0) ? 'block' : 'none';
+      }
+    }
+    function orderDishOnWhatsApp(dishName, tamilName, price) {
+      var phone = '919380414248';
+      var text = encodeURIComponent(
+        'Vanakkam Jayanthi Hotel (Jana K Reddy)!\n\nI would like to order:\n🍛 *' + dishName + '* (' + (tamilName || '') + ') - ₹' + price + '\n\n📍 Delivery/Takeaway: 42, Pioneer Mill Road, Peelamedu, Coimbatore.\nPlease confirm availability and timing.'
+      );
+      window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    }
+    function resetMenuFilters() {
+      switchMenuCategory('all');
+      switchDietFilter('all');
+    }
+    window.openMobileDrawer = openMobileDrawer;
+    window.closeMobileDrawer = closeMobileDrawer;
+    window.switchMenuCategory = switchMenuCategory;
+    window.switchDietFilter = switchDietFilter;
+    window.filterMenuDishes = filterMenuDishes;
+    window.orderDishOnWhatsApp = orderDishOnWhatsApp;
+    window.resetMenuFilters = resetMenuFilters;
+  </script>
 </head>
 <body class="heritage-texture">
+
+  <!-- Reusable SVG Symbols -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="hidden" style="display:none" aria-hidden="true">
+    <symbol id="icon-whatsapp" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-5.705 1.554zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </symbol>
+  </svg>
 
   <!-- TOP ANNOUNCEMENT BAR (Proprietor & Authentic Motto) -->
   <aside class="bg-maroon-dark text-amber-200 text-[11px] sm:text-xs py-2 px-3 sm:px-4 border-b border-amber-900/30 select-none" aria-label="Announcement">
@@ -173,19 +269,39 @@
         </a>
       </div>
 
-      <!-- Mobile / Tablet Action Buttons (Prominent Menu pill + Drawer toggle) -->
-      <div class="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
-        <a href="#menu" class="px-2.5 py-1.5 rounded-lg bg-maroon text-white text-xs font-bold hover:bg-maroon-dark transition flex items-center gap-1 shadow-xs active:scale-95" aria-label="Go directly to Food Menu">
-          <span>🍽️</span>
-          <span>Menu</span>
+      <!-- Mobile / Tablet Action Buttons (Call & Open Menu) -->
+      <div class="flex lg:hidden items-center gap-2 flex-shrink-0">
+        <a href="tel:9884414248" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-maroon text-maroon text-xs font-bold hover:bg-maroon hover:text-white transition shadow-2xs active:scale-95" aria-label="Call Jayanthi Hotel">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 4V3z"/></svg>
+          <span class="text-[11px]">Call</span>
         </a>
-        <button id="btn-open-drawer" class="w-10 h-10 flex items-center justify-center text-maroon rounded-lg bg-amber-100/80 hover:bg-amber-100 transition active:scale-95 flex-shrink-0" aria-label="Open Mobile Menu Navigation">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <button id="btn-open-drawer" onclick="openMobileDrawer(event)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-maroon text-white text-xs font-bold shadow-sm hover:bg-maroon-dark transition active:scale-95 flex-shrink-0" aria-label="Open Mobile Menu Navigation">
+          <svg class="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span>Menu</span>
         </button>
       </div>
 
     </div>
   </header>
+
+  <!-- MOBILE QUICK NAVIGATION STRIP (Always visible on phone; 1-tap direct access) -->
+  <nav class="lg:hidden sticky top-16 z-30 bg-cream-light/95 backdrop-blur-md border-b border-[rgba(122,31,26,0.1)] px-3 py-2 overflow-x-auto scrollbar-none flex items-center gap-2 select-none shadow-2xs" aria-label="Mobile Quick Menu">
+    <a href="#meals-hero" class="px-3 py-1.5 rounded-full bg-maroon text-white text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 flex items-center gap-1">
+      <span>🍛</span><span>Full Meals ₹80</span>
+    </a>
+    <a href="#biriyani-hero" class="px-3 py-1.5 rounded-full bg-white text-coffee border border-warm text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 flex items-center gap-1">
+      <span>🍗</span><span>Dum Biriyani</span>
+    </a>
+    <a href="#menu" class="px-3 py-1.5 rounded-full bg-amber-100 text-maroon text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 flex items-center gap-1">
+      <span>📋</span><span>All 41 Dishes</span>
+    </a>
+    <a href="#catering" class="px-3 py-1.5 rounded-full bg-white text-coffee border border-warm text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 flex items-center gap-1">
+      <span>🥘</span><span>Bulk Catering</span>
+    </a>
+    <a href="#visit" class="px-3 py-1.5 rounded-full bg-white text-coffee border border-warm text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 flex items-center gap-1">
+      <span>📍</span><span>Location</span>
+    </a>
+  </nav>
 
   <!-- FULLSCREEN MOBILE NAVIGATION DRAWER -->
   <div id="mobile-drawer" class="mobile-menu-drawer p-6 flex flex-col justify-between" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
@@ -198,34 +314,34 @@
             <span class="text-[11px] text-taupe font-medium">Jana K Reddy • Peelamedu</span>
           </div>
         </div>
-        <button id="btn-close-drawer" class="w-12 h-12 flex items-center justify-center text-maroon rounded-full bg-amber-100/60 active:scale-95" aria-label="Close Mobile Menu">
+        <button id="btn-close-drawer" onclick="closeMobileDrawer(event)" class="w-12 h-12 flex items-center justify-center text-maroon rounded-full bg-amber-100/60 active:scale-95" aria-label="Close Mobile Menu">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- Drawer Links -->
       <nav class="flex flex-col gap-3 py-6 font-serif text-lg font-bold text-coffee" aria-label="Mobile Drawer Navigation">
-        <a href="#hero" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
+        <a href="#hero" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
           <span>Home</span>
           <span class="text-saffron">→</span>
         </a>
-        <a href="#meals-hero" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)] text-maroon">
+        <a href="#meals-hero" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)] text-maroon">
           <span>Special Full Meals (முழு சாப்பாடு - ₹80)</span>
           <span class="text-saffron">★</span>
         </a>
-        <a href="#biriyani-hero" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
+        <a href="#biriyani-hero" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
           <span>Dum Biriyani Specials</span>
           <span class="text-saffron">→</span>
         </a>
-        <a href="#menu" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
+        <a href="#menu" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
           <span>Complete Menu & Prices</span>
           <span class="text-saffron">→</span>
         </a>
-        <a href="#catering" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
+        <a href="#catering" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
           <span>Bulk Order & Catering</span>
           <span class="text-saffron">→</span>
         </a>
-        <a href="#visit" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
+        <a href="#visit" onclick="closeMobileDrawer()" class="drawer-nav-link flex items-center justify-between py-2 border-b border-[rgba(122,31,26,0.08)]">
           <span>Visit Us (Pioneer Mill Road)</span>
           <span class="text-saffron">→</span>
         </a>
@@ -547,28 +663,28 @@
           </p>
         </div>
 
-        <!-- Sticky Category Navigation Bar -->
-        <div class="sticky top-16 sm:top-20 z-30 bg-cream/95 backdrop-blur-md py-3 -mx-4 px-4 sm:mx-0 sm:px-0 border-y border-[rgba(122,31,26,0.1)] mb-8 shadow-xs">
+                <!-- Sticky Category Navigation Bar -->
+        <div class="sticky top-28 sm:top-20 z-20 bg-cream/95 backdrop-blur-md py-3 -mx-4 px-4 sm:mx-0 sm:px-0 border-y border-[rgba(122,31,26,0.1)] mb-8 shadow-xs">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
             
             <!-- Category Tabs -->
             <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto scrollbar-none pb-1 sm:pb-0" role="tablist" aria-label="Menu Categories">
-              <button data-category="all" class="menu-category-tab active-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-maroon text-white whitespace-nowrap transition active:scale-95 shadow-sm" role="tab">All Items</button>
-              <button data-category="meals" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">சாப்பாடு & சாதம் (Meals)</button>
-              <button data-category="biriyani" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">பிரியாணி (Biriyani)</button>
-              <button data-category="parota" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">பரோட்டா & சப்பாத்தி</button>
-              <button data-category="tiffin" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">டிபன் & ரோஸ்ட்</button>
-              <button data-category="starters" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">சைட் டிஷ் & கிரேவி</button>
+              <button onclick="switchMenuCategory('all', this)" data-category="all" class="menu-category-tab active-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-maroon text-white whitespace-nowrap transition active:scale-95 shadow-sm" role="tab">All Items (41)</button>
+              <button onclick="switchMenuCategory('meals', this)" data-category="meals" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">சாப்பாடு &amp; சாதம் (Meals)</button>
+              <button onclick="switchMenuCategory('biriyani', this)" data-category="biriyani" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">பிரியாணி (Biriyani)</button>
+              <button onclick="switchMenuCategory('parota', this)" data-category="parota" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">பரோட்டா &amp; சப்பாத்தி</button>
+              <button onclick="switchMenuCategory('tiffin', this)" data-category="tiffin" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">டிபன் &amp; ரோஸ்ட்</button>
+              <button onclick="switchMenuCategory('starters', this)" data-category="starters" class="menu-category-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-coffee border border-warm whitespace-nowrap hover:bg-amber-50 transition active:scale-95 shadow-sm" role="tab">சைட் டிஷ் &amp; கிரேவி</button>
             </div>
 
             <!-- Veg / Non-Veg Quick Switcher -->
             <div class="flex items-center gap-1.5 self-end sm:self-auto bg-white p-1 rounded-full border border-[rgba(122,31,26,0.12)] shadow-sm">
-              <button data-diet="all" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold bg-maroon text-white transition">All</button>
-              <button data-diet="veg" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold text-coffee flex items-center gap-1.5 transition">
+              <button onclick="switchDietFilter('all', this)" data-diet="all" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold bg-maroon text-white transition">All</button>
+              <button onclick="switchDietFilter('veg', this)" data-diet="veg" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold text-coffee flex items-center gap-1.5 transition">
                 <span class="indicator-veg scale-75"></span>
                 <span>Veg</span>
               </button>
-              <button data-diet="nonveg" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold text-coffee flex items-center gap-1.5 transition">
+              <button onclick="switchDietFilter('nonveg', this)" data-diet="nonveg" class="diet-filter-pill px-3 py-1 rounded-full text-xs font-bold text-coffee flex items-center gap-1.5 transition">
                 <span class="indicator-nonveg scale-75"></span>
                 <span>Non-Veg</span>
               </button>
@@ -577,11 +693,10 @@
           </div>
         </div>
 
-        <!-- Menu Items Grid (Always visible on mobile & desktop; hydrated dynamically by js/main.js) -->
+        <!-- Menu Items Grid (All 41 Dishes Pre-rendered in HTML for instant mobile visibility) -->
         <div id="menu-items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          
-          <!-- Card 1: Traditional Full Meals -->
-          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals">
+          <!-- Dish 1: Traditional South Indian Full Meals -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals" data-veg="true">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2.5">
                 <div class="flex items-center gap-2">
@@ -607,54 +722,180 @@
                 4.9
               </span>
               <button onclick="orderDishOnWhatsApp('Traditional South Indian Full Meals', 'முழு சாப்பாடு', 80)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-5.705 1.554zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
                 <span>Order</span>
               </button>
             </div>
           </article>
-
-          <!-- Card 2: Dum Chicken Biriyani -->
-          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani">
+          <!-- Dish 2: Thakkali Sadham (Tomato Rice) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Lunch Classic</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Afternoon / மதியம்</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Thakkali Sadham (Tomato Rice)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">தக்காளி சாதம்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Flavorful South Indian rice tossed with ripe country tomatoes, mustard, curry leaves, and spices. Served with crunchy appalam.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Thakkali Sadham (Tomato Rice)', 'தக்காளி சாதம்', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 3: Thayir Sadham (Curd Rice) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Cooling Classic</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Afternoon / மதியம்</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Thayir Sadham (Curd Rice)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">தயிர் சாதம்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Creamy fresh curd mixed with soft mashed rice, tempered with mustard seeds, green chillies, ginger, and fresh curry leaves.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Thayir Sadham (Curd Rice)', 'தயிர் சாதம்', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 4: Ney Sadham (Ghee Rice) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Homestyle</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Ney Sadham (Ghee Rice)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">கீ ரைஸ்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹60</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Aromatic rice slow-cooked in pure country cow ghee with whole cinnamon, cloves, fried cashews, and golden raisins.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Ney Sadham (Ghee Rice)', 'கீ ரைஸ்', 60)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 5: Veg Pulao -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="meals" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Pure Veg</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Veg Pulao</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">வெஜ் புலாவ்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹60</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Mild fragrant long-grain rice tossed with garden green peas, diced carrots, and beans with whole spice aroma.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Veg Pulao', 'வெஜ் புலாவ்', 60)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 6: Signature Chicken Biriyani -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani" data-veg="false">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2.5">
                 <div class="flex items-center gap-2">
                   <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
-                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Signature Dum Biriyani</span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Specialty</span>
                 </div>
-                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch & Dinner / மதியம் & இரவு</span>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Afternoon / மதியம்</span>
               </div>
               <div class="flex items-start justify-between gap-3 mb-1.5">
                 <div class="min-w-0">
-                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Traditional Dum Chicken Biriyani</h3>
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Signature Chicken Biriyani</h3>
                   <p class="text-xs sm:text-sm text-saffron font-bold">சிக்கன் பிரியாணி</p>
                 </div>
                 <div class="text-right flex-shrink-0">
-                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹100</span>
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹120</span>
                 </div>
               </div>
-              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Authentic slow-dum seeraga samba rice cooked with succulent chicken pieces, native aromatic spices, fresh mint, and coriander. Served with egg, chicken salna, and curd raita.</p>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Fragrant dum-cooked biriyani rice with tender chicken pieces and stone-ground spices. Served with hot chicken salna and onion raita.</p>
             </div>
             <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
               <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                 4.9
               </span>
-              <button onclick="orderDishOnWhatsApp('Traditional Dum Chicken Biriyani', 'சிக்கன் பிரியாணி', 100)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-5.705 1.554zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <button onclick="orderDishOnWhatsApp('Signature Chicken Biriyani', 'சிக்கன் பிரியாணி', 120)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
                 <span>Order</span>
               </button>
             </div>
           </article>
-
-          <!-- Card 3: Chilli Chicken Biriyani -->
-          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani">
+          <!-- Dish 7: Chilli Chicken Biriyani -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani" data-veg="false">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2.5">
                 <div class="flex items-center gap-2">
                   <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
-                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Chef Special</span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">House Special</span>
                 </div>
-                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch & Dinner / மதியம் & இரவு</span>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Afternoon / மதியம்</span>
               </div>
               <div class="flex items-start justify-between gap-3 mb-1.5">
                 <div class="min-w-0">
@@ -662,25 +903,1117 @@
                   <p class="text-xs sm:text-sm text-saffron font-bold">சில்லி சிக்கன் பிரியாணி</p>
                 </div>
                 <div class="text-right flex-shrink-0">
-                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹130</span>
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹140</span>
                 </div>
               </div>
-              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Fragrant seeraga samba biriyani rice served with generous portions of spicy, crispy deep-fried chilli chicken. Accompanied by salna and raita.</p>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Jayanthi Hotel special! Steaming aromatic biriyani rice accompanied by spicy, crispy fried chilli chicken bites.</p>
             </div>
             <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
               <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                 4.9
               </span>
-              <button onclick="orderDishOnWhatsApp('Chilli Chicken Biriyani', 'சில்லி சிக்கன் பிரியாணி', 130)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-5.705 1.554zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <button onclick="orderDishOnWhatsApp('Chilli Chicken Biriyani', 'சில்லி சிக்கன் பிரியாணி', 140)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
                 <span>Order</span>
               </button>
             </div>
           </article>
-
+          <!-- Dish 8: Kuska (Spiced Biriyani Rice) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">All-Time Favorite</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Kuska (Spiced Biriyani Rice)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">குஸ்கா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹60</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Aromatic plain dum biriyani rice cooked in rich broth, served piping hot with flavorful chicken salna and onion raita.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Kuska (Spiced Biriyani Rice)', 'குஸ்கா', 60)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 9: Kalan (Mushroom) Biriyani -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Pure Veg Special</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Kalan (Mushroom) Biriyani</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">காளான் பிரியாணி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Fresh button mushrooms slow-cooked with spiced biriyani rice, whole cardamom, and mint. Served with veg kurma.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Kalan (Mushroom) Biriyani', 'காளான் பிரியாணி', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 10: Special Veg Biriyani -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="biriyani" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Pure Veg</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Special Veg Biriyani</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">வெஜ் பிரியாணி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹60</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Garden fresh carrots, beans, and green peas simmered with fragrant rice and whole spices. Served with raita.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Special Veg Biriyani', 'வெஜ் பிரியாணி', 60)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 11: Madurai Parotta (1 Pc) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Dinner Staple</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Madurai Parotta (1 Pc)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">புரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹20</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Flaky, multi-layered spiral parotta beaten hot on griddle. Served with aromatic roadside salna.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Madurai Parotta (1 Pc)', 'புரோட்டா', 20)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 12: Madurai Bun Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Puffed Favorite</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Madurai Bun Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">பன் பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹25</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Crispy golden dome outside, soft buttery layers inside bun parotta served piping hot with salna.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Madurai Bun Parotta', 'பன் பரோட்டா', 25)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 13: Nool (Thread) Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Chef Special</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Nool (Thread) Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">நூல் பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹30</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Fine thread-like string layers of flaky parotta that pull apart effortlessly, served with thick gravy.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Nool (Thread) Parotta', 'நூல் பரோட்டா', 30)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 14: Veechu Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Classic</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Veechu Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">வீச்சு பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹30</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Large, thin square-folded hand-stretched parotta toasted crisp on cast-iron tawa.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Veechu Parotta', 'வீச்சு பரோட்டா', 30)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 15: Muttai Veechu Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Evening Special</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Veechu Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை வீச்சு பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹40</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Thin hand-stretched parotta pocket filled with seasoned beaten egg, shallots, and crushed black pepper.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Veechu Parotta', 'முட்டை வீச்சு பரோட்டா', 40)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 16: Chicken Kothu Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Street Style Hero</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Chicken Kothu Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">சிக்கன் கொத்து பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹140</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Flaky parotta shredded and beaten on hot iron tawa with chicken pieces, egg, spicy salna, and curry leaves.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Chicken Kothu Parotta', 'சிக்கன் கொத்து பரோட்டா', 140)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 17: Muttai Kothu Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Popular</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Kothu Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை கொத்து பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹90</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Shredded layered parotta stir-fried on tawa with farm eggs, onions, green chillies, and spicy salna gravy.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Kothu Parotta', 'முட்டை கொத்து பரோட்டா', 90)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 18: Veg Kothu Parotta -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Pure Veg</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Veg Kothu Parotta</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">வெஜ் கொத்து பரோட்டா</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Shredded parotta chopped with farm fresh vegetables, onions, curry leaves, and rich vegetable kurma.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Veg Kothu Parotta', 'வெஜ் கொத்து பரோட்டா', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 19: Chapati (1 Pc) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Healthy &amp; Soft</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Chapati (1 Pc)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">சப்பாத்தி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹20</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Soft whole-wheat phulka chapati served with hot vegetable kurma or aromatic salna.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Chapati (1 Pc)', 'சப்பாத்தி', 20)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 20: Muttai Chapati (Egg Chapati) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Protein Rich</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Chapati (Egg Chapati)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை சப்பாத்தி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹40</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Whole wheat chapati coated with seasoned beaten egg on cast-iron griddle.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Chapati (Egg Chapati)', 'முட்டை சப்பாத்தி', 40)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 21: Kothu Chapati -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="parota" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Healthy Twist</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Kothu Chapati</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">கொத்து சப்பாத்தி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹90</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Wheat chapati shredded with eggs, onions, tomatoes, and spicy salna on tawa.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Kothu Chapati', 'கொத்து சப்பாத்தி', 90)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 22: Malli Poo Idli (2 Pcs) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Morning &amp; Night</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">7:00-11:30 AM &amp; 6:30-10:30 PM</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Malli Poo Idli (2 Pcs)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">இட்லி 2 pcs</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹30</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Steaming hot, pillow-soft fermented rice cakes served with hot drumstick sambar and fresh coconut chutney.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Malli Poo Idli (2 Pcs)', 'இட்லி 2 pcs', 30)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 23: Medhu Vadai (Ulundu Vadai) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Crispy Morning</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Medhu Vadai (Ulundu Vadai)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">உளுந்து வடை</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹10</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Crispy golden exterior, fluffy soft interior urad dal vada with black pepper and curry leaves.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Medhu Vadai (Ulundu Vadai)', 'உளுந்து வடை', 10)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 24: Poori (Set of 2) with Masala -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Morning Classic</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Poori (Set of 2) with Masala</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">பூரி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹20</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Puffed golden wheat pooris served with yellow potato masala and coconut chutney.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Poori (Set of 2) with Masala', 'பூரி', 20)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 25: Ghee Ven Pongal -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Ghee Special</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Ghee Ven Pongal</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">பொங்கல்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Rich rice and moong dal cooked with cow ghee, whole peppercorns, crushed ginger, and golden cashews.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Ghee Ven Pongal', 'பொங்கல்', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 26: Rava Kichadi -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Homestyle</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Rava Kichadi</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">கிச்சடி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Roasted semolina cooked with fresh vegetables, green chillies, ginger, and aromatic ghee tadka.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Rava Kichadi', 'கிச்சடி', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 27: Traditional Sevai -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Traditional</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Traditional Sevai</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">சேவை</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Steamed rice string hoppers seasoned with fresh lemon/coconut and mustard curry leaf tadka.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Traditional Sevai', 'சேவை', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 28: Kal Dosa -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Soft &amp; Spongy</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Kal Dosa</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">தோசை</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹20</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Thick spongy fermented griddle pancake served with hot sambar and fresh chutney.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Kal Dosa', 'தோசை', 20)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 29: Ney Roast (Ghee Roast Dosa) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Crispy Gold</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning (₹70) &amp; Night (₹80)</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Ney Roast (Ghee Roast Dosa)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">நெய் ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Paper-crisp golden brown cone dosa glistening with aromatic pure cow ghee.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Ney Roast (Ghee Roast Dosa)', 'நெய் ரோஸ்ட்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 30: Podi Roast Dosa -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Spicy Favorite</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Podi Roast Dosa</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">பொடி ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Crispy golden roast generously sprinkled with spicy homemade idli podi and drizzled with ghee.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Podi Roast Dosa', 'பொடி ரோஸ்ட்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 31: Onion Roast Dosa -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Crunchy Shallots</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Onion Roast Dosa</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">ஆனியன் ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Roast dosa studded with finely chopped shallots and green chillies toasted to sweet caramel crunch.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Onion Roast Dosa', 'ஆனியன் ரோஸ்ட்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 32: Muttai Roast (Egg Dosa) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Protein Rich</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Roast (Egg Dosa)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Golden crispy roast with seasoned farm egg layer and freshly crushed black pepper.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Roast (Egg Dosa)', 'முட்டை ரோஸ்ட்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 33: Masala Roast Dosa -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Classic</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning / காலை</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Masala Roast Dosa</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">மசால் ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Golden crispy roast folded around hot seasoned potato, mustard, and onion masala.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Masala Roast Dosa', 'மசால் ரோஸ்ட்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 34: Ney Podi Roast (Ghee Podi) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Double Ghee Rich</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Ney Podi Roast (Ghee Podi)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">நெய் பொடி ரோஸ்ட்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹100</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Extra-crispy golden roast generously doused with pure cow ghee and gun powder podi.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Ney Podi Roast (Ghee Podi)', 'நெய் பொடி ரோஸ்ட்', 100)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 35: Plain Oothappam -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Soft Spongy</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Plain Oothappam</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">ஊத்தப்பம்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹40</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Thick spongy pancake toasted with crisp bottom and soft porous top.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Plain Oothappam', 'ஊத்தப்பம்', 40)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 36: Onion Oothappam -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Popular</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning &amp; Night / காலை &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Onion Oothappam</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">ஆனியன் ஊத்தப்பம்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Thick pancake embedded with lots of fresh chopped shallots, green chillies, and coriander.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Onion Oothappam', 'ஆனியன் ஊத்தப்பம்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 37: Podi Oothappam / Ney Podi Oothappam -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="tiffin" data-veg="true">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-veg shadow-sm flex-shrink-0" title="Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-emerald-100 text-emerald-800 border border-emerald-300">Spicy Soft</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning (₹70) &amp; Night Ney Podi (₹100)</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Podi Oothappam / Ney Podi Oothappam</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">பொடி ஊத்தப்பம் / நெய் பொடி ஊத்தப்பம்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹70</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Thick oothappam topped with fragrant homemade spicy podi and pure ghee.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Podi Oothappam / Ney Podi Oothappam', 'பொடி ஊத்தப்பம் / நெய் பொடி ஊத்தப்பம்', 70)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 38: Crispy Chicken 65 -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="starters" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Must Try Side</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Lunch &amp; Dinner / மதியம் &amp; இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Crispy Chicken 65</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">சிக்கன் 65</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹80</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Deep-fried marinated boneless chicken bites with spicy curry leaf masala, green chillies, and lemon.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.9
+              </span>
+              <button onclick="orderDishOnWhatsApp('Crispy Chicken 65', 'சிக்கன் 65', 80)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 39: Nattu Chicken Gravy -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="starters" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Dinner Special</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Nattu Chicken Gravy</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">சிக்கன் கிரேவி</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹100</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Rich country chicken curry slow-simmered with shallots, garlic, and freshly roasted spices. Perfect with Parotta.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Nattu Chicken Gravy', 'சிக்கன் கிரேவி', 100)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 40: Muttai Masala (Egg Masala) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="starters" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Spicy Egg Side</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Night / இரவு</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Masala (Egg Masala)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை மசால்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹50</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Boiled eggs cooked in rich onion-tomato gravy tempered with curry leaves and black pepper.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.7
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Masala (Egg Masala)', 'முட்டை மசால்', 50)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <!-- Dish 41: Muttai Vagaigal (Boiled / Omelette / Kalaki) -->
+          <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="starters" data-veg="false">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="indicator-nonveg shadow-sm flex-shrink-0" title="Non-Vegetarian"></span>
+                  <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs bg-red-100 text-maroon border border-red-200">Quick Add-on</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">Morning, Lunch &amp; Night</span>
+              </div>
+              <div class="flex items-start justify-between gap-3 mb-1.5">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">Muttai Vagaigal (Boiled / Omelette / Kalaki)</h3>
+                  <p class="text-xs sm:text-sm text-saffron font-bold">முட்டை வகைகள்</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xl sm:text-2xl font-bold text-maroon font-serif leading-none">₹20</span>
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">Fresh farm egg preparations: Hard Boiled (₹20), Fluffy Omelette, or juicy Madurai-style Kalaki.</p>
+            </div>
+            <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
+              <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                4.8
+              </span>
+              <button onclick="orderDishOnWhatsApp('Muttai Vagaigal (Boiled / Omelette / Kalaki)', 'முட்டை வகைகள்', 20)" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-leaf-green text-white rounded-full text-xs font-bold hover:bg-emerald-800 transition active:scale-95 shadow-sm" title="Order on WhatsApp">
+                <svg class="w-3.5 h-3.5 fill-current"><use href="#icon-whatsapp"></use></svg>
+                <span>Order</span>
+              </button>
+            </div>
+          </article>
+          <div id="menu-empty-message" style="display:none" class="col-span-full text-center py-12 bg-white rounded-2xl border border-warm p-6">
+            <p class="text-lg text-taupe font-serif">No items found matching your current filter.</p>
+            <button onclick="switchMenuCategory('all'); switchDietFilter('all')" class="mt-4 px-5 py-2.5 bg-maroon text-white rounded-full text-sm font-semibold hover:bg-maroon-dark transition">
+              Show All Dishes
+            </button>
+          </div>
         </div>
-
       </div>
     </section>
 

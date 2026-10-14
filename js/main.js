@@ -69,7 +69,11 @@ function initMenuRenderer() {
       tab.classList.remove('bg-white', 'text-coffee');
 
       currentCategory = tab.dataset.category;
-      renderMenuItems();
+      if (typeof window.switchMenuCategory === 'function') {
+        window.switchMenuCategory(currentCategory, tab);
+      } else {
+        renderMenuItems();
+      }
     });
   });
 
@@ -83,7 +87,11 @@ function initMenuRenderer() {
       pill.classList.remove('bg-white', 'text-coffee');
 
       currentDietFilter = pill.dataset.diet;
-      renderMenuItems();
+      if (typeof window.switchDietFilter === 'function') {
+        window.switchDietFilter(currentDietFilter, pill);
+      } else {
+        renderMenuItems();
+      }
     });
   });
 
@@ -93,8 +101,36 @@ function initMenuRenderer() {
 function renderMenuItems() {
   const container = document.getElementById('menu-items-grid');
   if (!container) return;
+
+  // Primary: Filter pre-rendered cards in-place with zero latency
+  const cards = container.querySelectorAll('.menu-item-card');
+  if (cards && cards.length > 0) {
+    let visible = 0;
+    cards.forEach(card => {
+      const cat = card.getAttribute('data-category');
+      const isVeg = card.getAttribute('data-veg') === 'true';
+      const matchCategory = currentCategory === 'all' || cat === currentCategory;
+      const matchDiet = currentDietFilter === 'all' ||
+        (currentDietFilter === 'veg' && isVeg) ||
+        (currentDietFilter === 'nonveg' && !isVeg);
+
+      if (matchCategory && matchDiet) {
+        card.style.display = 'flex';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const emptyNotice = document.getElementById('menu-empty-message');
+    if (emptyNotice) {
+      emptyNotice.style.display = (visible === 0) ? 'block' : 'none';
+    }
+    return;
+  }
+
+  // Fallback: If for any reason cards were not in DOM, render from window.RESTAURANT_MENU
   if (!window.RESTAURANT_MENU || !Array.isArray(window.RESTAURANT_MENU)) {
-    setTimeout(renderMenuItems, 50);
     return;
   }
 
@@ -108,7 +144,7 @@ function renderMenuItems() {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-warm p-6">
+      <div id="menu-empty-message" class="col-span-full text-center py-12 bg-white rounded-2xl border border-warm p-6">
         <p class="text-lg text-taupe font-serif">No items found matching your current filter.</p>
         <button onclick="resetMenuFilters()" class="mt-4 px-5 py-2.5 bg-maroon text-white rounded-full text-sm font-semibold hover:bg-maroon-dark transition">
           Show All Dishes
@@ -119,9 +155,8 @@ function renderMenuItems() {
   }
 
   container.innerHTML = filtered.map(item => `
-    <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="${item.category}">
+    <article class="menu-item-card bg-ivory rounded-2xl p-4 sm:p-5 border border-[rgba(122,31,26,0.12)] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between" data-category="${item.category}" data-veg="${item.isVeg}">
       <div>
-        <!-- Badges & Timing Row -->
         <div class="flex items-center justify-between gap-2 mb-2.5">
           <div class="flex items-center gap-2">
             <span class="${item.isVeg ? 'indicator-veg' : 'indicator-nonveg'} shadow-sm flex-shrink-0" title="${item.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}"></span>
@@ -130,7 +165,6 @@ function renderMenuItems() {
           ${item.timing ? `<span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-md bg-amber-100/80 text-coffee border border-amber-200/60">${item.timing}</span>` : ''}
         </div>
 
-        <!-- Dish Title & Price Row -->
         <div class="flex items-start justify-between gap-3 mb-1.5">
           <div class="min-w-0">
             <h3 class="text-base sm:text-lg font-bold text-coffee font-serif leading-snug">${item.name}</h3>
@@ -141,11 +175,9 @@ function renderMenuItems() {
           </div>
         </div>
 
-        <!-- Description -->
         <p class="text-xs sm:text-sm text-taupe leading-relaxed mt-1.5 mb-3">${item.description}</p>
       </div>
 
-      <!-- Action Row -->
       <div class="pt-3 border-t border-[rgba(122,31,26,0.08)] flex items-center justify-between">
         <span class="text-[11px] text-taupe font-semibold flex items-center gap-1">
           <svg class="w-3.5 h-3.5 text-saffron fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -358,8 +390,8 @@ function initScrollAnimations() {
   });
 
   revealElements.forEach(el => {
-    // If element is already in viewport or is the menu items container, do not hide it
-    if (el.id === 'menu-items-grid') {
+    // On mobile devices or within the menu, never hide content with opacity-0
+    if (window.innerWidth < 768 || el.id === 'menu-items-grid' || el.closest('#menu')) {
       el.classList.add('opacity-100');
       return;
     }
@@ -367,3 +399,29 @@ function initScrollAnimations() {
     observer.observe(el);
   });
 }
+
+// Global window assignments for robust mobile compatibility
+window.openMobileDrawer = function(e) {
+  if (e) e.preventDefault();
+  const drawer = document.getElementById('mobile-drawer');
+  if (drawer) {
+    drawer.classList.add('open');
+    drawer.style.display = 'flex';
+    drawer.style.visibility = 'visible';
+    drawer.style.transform = 'translateX(0)';
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeMobileDrawer = function(e) {
+  if (e) e.preventDefault();
+  const drawer = document.getElementById('mobile-drawer');
+  if (drawer) {
+    drawer.classList.remove('open');
+    drawer.style.transform = 'translateX(100%)';
+    drawer.style.visibility = 'hidden';
+    document.body.style.overflow = '';
+  }
+};
+
+window.renderMenuItems = renderMenuItems;
